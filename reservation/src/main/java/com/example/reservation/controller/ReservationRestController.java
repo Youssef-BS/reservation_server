@@ -1,55 +1,54 @@
-package tn.esprit.tpfoyer.controller;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+package com.example.reservation.controller;
+
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.tpfoyer.entity.Reservation;
-import tn.esprit.tpfoyer.service.IReservationService;
+import com.example.reservation.service.IReservationService;
+import com.example.reservation.entity.Reservation;
+
+import java.util.Date;
 import java.util.List;
 
-
-@Tag(name="gestion de reservation")
 @RestController
+@RequestMapping("/api/reservations")
 @AllArgsConstructor
-@RequestMapping("/reservation")
 public class ReservationRestController {
 
-    IReservationService reservationService;
+    private final IReservationService reservationService;
 
-    // http://localhost:8089/tpfoyer/reservation/get-all-reservations
-    @Operation(description="recuperer toutes les reservations de db")
-    @GetMapping("/get-all-reservations")
-    public List<Reservation> getAllReservations(){
+    @GetMapping("/getAllReservations")
+    public List<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
     }
 
-    // http://localhost:8089/tpfoyer/reservation/get-reservation/1
-    @Operation(description="recuperer les reservations by id")
-    @GetMapping("/get-reservation/{reservationId}")
-    public Reservation getReservation(@PathVariable Long reservationId){
-        return reservationService.getReservationById(reservationId);
+    @GetMapping("/{id}")
+    public Reservation getReservation(@PathVariable Long id) {
+        return reservationService.getReservationById(id);
     }
 
-
-    // http://localhost:8089/tpfoyer/reservation/add-reservation
-    @Operation(description="ajouter des reservations")
-    @PostMapping("/add-reservation")
-    public Reservation addReservation(@RequestBody Reservation reservation){
+    @PostMapping
+    public Reservation createReservation(@RequestBody Reservation reservation) {
         return reservationService.addReservation(reservation);
     }
 
-    // http://localhost:8089/tpfoyer/reservation/update-reservation
-    @Operation(description="modifier des reservations")
-    @PutMapping("/update-reservation")
-    public Reservation updateReservation(@RequestBody Reservation reservation){
+    @PutMapping("/{id}")
+    public Reservation updateReservation(@PathVariable Long id, @RequestBody Reservation reservation) {
+        reservation.setId(id);
         return reservationService.updateReservation(reservation);
     }
 
-    // http://localhost:8089/tpfoyer/reservation/delete-reservarion/1
-    @Operation(description="supprimer des reservations by id")
-    @DeleteMapping("/delete-reservation/{reservationID}")
-    public void deleteReservation(@PathVariable Long reservationID){
-        reservationService.deleteReservationById(reservationID);
+    @DeleteMapping("/{id}")
+    public void deleteReservation(@PathVariable Long id) {
+        reservationService.deleteReservationById(id);
+    }
+
+    @GetMapping("/search")
+    public List<Reservation> searchReservations(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date reservationDate,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Boolean status
+    ) {
+        return reservationService.searchReservations(reservationDate, keyword, status);
     }
 
 }

@@ -1,40 +1,27 @@
-package tn.esprit.tpfoyer.entity;
-import jakarta.persistence.*;
-import lombok.*;
-import java.util.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+package com.example.reservation.entity;
 
-// Remove the import statement for Etudiant
-// import tn.esprit.tpfoyer.entity.Etudiant; // Not needed anymore
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import java.util.Date;
 
 @Entity
 @Getter
 @Setter
-@Table(name="RESERVATION")
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Reservation {
 
     @Id
-    @Column(name="ID_RESERVATION")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idReservation;
+    private Long id;
 
-    @Column(name="ANNEE_UNIVERSITAIRE")
-    private Date anneeUniversitaire;
+    @Temporal(TemporalType.DATE)
+    private Date reservationDate;
 
-    @Column(name="STATUS")
-    private boolean estValid;
-
-    // Change back to ElementCollection
-    @ElementCollection
-    @CollectionTable(name = "reservation_etudiant_ids", joinColumns = @JoinColumn(name = "reservation_id"))
-    @Column(name="ETUDIANT_ID")
-    private Set<Long> etudiantIds; // Store IDs instead of Etudiant objects
-
-    @Override
-    public String toString() {
-        return "Reservation [idReservation=" + idReservation + ", anneeUniversitaire=" + anneeUniversitaire + ", estValid=" + estValid + ", etudiantIds=" + etudiantIds + "]";
-    }
+    private String description;
+    
+    private boolean status;
 }

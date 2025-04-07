@@ -1,7 +1,8 @@
-package tn.esprit.tpfoyer.service;
-import tn.esprit.tpfoyer.entity.Reservation;
-import java.util.List;
+package com.example.reservation.service;
 
+import java.util.Date;
+import java.util.List;
+import com.example.reservation.entity.Reservation;
 
 public interface IReservationService {
 
@@ -10,5 +11,7 @@ public interface IReservationService {
     public Reservation addReservation(Reservation reservation);
     public Reservation updateReservation(Reservation reservation);
     public void deleteReservationById(Long ReservationId);
+    List<Reservation> searchReservations(Date reservationDate, String keyword, Boolean status);
+
 
 }

@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  discovery:
+    build:
+      context: ./discovery
+      dockerfile: Dockerfile
+    container_name: discovery_container
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_APPLICATION_NAME=discovery-service
+    networks:
+      - my_network
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway_container
+    ports:
+      - "8078:8078"
+    depends_on:
+      - discovery
+    environment:
+      - SPRING_APPLICATION_NAME=gateway-service
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka/
+      - SERVER_PORT=8078
+    networks:
+      - my_network
+
+  reservation:
+    build:
+      context: ./reservation
+      dockerfile: Dockerfile
+    container_name: reservation_container
+    ports:
+      - "8089:8089"
+    depends_on:
+      - discovery
+    environment:
+      - SPRING_APPLICATION_NAME=reservation-service
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery:8761/eureka/
+      - SERVER_PORT=8089
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
